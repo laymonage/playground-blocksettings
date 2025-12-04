@@ -1,0 +1,235 @@
+{% extends "base.html" %}
+{% load static wagtailcore_tags wagtailimages_tags %}
+
+{% block body_class %}template-homepage{% endblock %}
+
+{% block extra_css %}
+<style>
+    .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 2rem;
+    }
+    .test-stream-block {
+        margin: 2rem 0;
+        padding: 2rem;
+        border: 1px solid #e0e0e0;
+        border-radius: 8px;
+        background: #f9f9f9;
+    }
+    .test-stream-block h2 {
+        margin-top: 0;
+        color: #333;
+        border-bottom: 2px solid #007bff;
+        padding-bottom: 0.5rem;
+    }
+    .block-field {
+        margin: 1rem 0;
+        padding: 1rem;
+        background: white;
+        border-left: 3px solid #007bff;
+    }
+    .block-field strong {
+        display: block;
+        margin-bottom: 0.5rem;
+        color: #666;
+        font-size: 0.9em;
+        text-transform: uppercase;
+    }
+    .block-type {
+        display: inline-block;
+        padding: 0.25rem 0.75rem;
+        background: #007bff;
+        color: white;
+        border-radius: 4px;
+        font-size: 0.85em;
+        margin-bottom: 1rem;
+    }
+    .settings-field {
+        border-left-color: #6c757d;
+        background: #f8f9fa;
+    }
+</style>
+{% endblock extra_css %}
+
+{% block content %}
+<div class="container">
+    <h1>{{ page.title }}</h1>
+
+    {% if page.test_stream %}
+        <div class="test-stream-wrapper">
+            {% for block in page.test_stream %}
+                <div class="test-stream-block">
+                    <span class="block-type">{{ block.block_type|title }}</span>
+
+                    {% if block.block_type == 'simple_reorder' %}
+                        <h2>Simple Reorder Block</h2>
+                        <p><em>Tests: Basic reordering, ImageBlock</em></p>
+                        {% if block.value.photo %}
+                            <div class="block-field">
+                                <strong>Photo:</strong>
+                                {% image block.value.photo width-200 %}
+                            </div>
+                        {% endif %}
+                        <div class="block-field">
+                            <strong>Surname:</strong> {{ block.value.surname }}
+                        </div>
+                        <div class="block-field">
+                            <strong>First Name:</strong> {{ block.value.first_name }}
+                        </div>
+                        <div class="block-field">
+                            <strong>Biography:</strong>
+                            {{ block.value.biography|richtext }}
+                        </div>
+
+                    {% elif block.block_type == 'person' %}
+                        <h2>Person Block</h2>
+                        <p><em>Tests: Nested groups, required field in settings, mixin pattern, attrs</em></p>
+                        {% if block.value.photo %}
+                            <div class="block-field">
+                                <strong>Photo:</strong>
+                                {% image block.value.photo width-200 %}
+                            </div>
+                        {% endif %}
+                        <div class="block-field">
+                            <strong>Name:</strong> {{ block.value.first_name }} {{ block.value.surname }}
+                        </div>
+                        <div class="block-field">
+                            <strong>Biography:</strong>
+                            {{ block.value.biography|richtext }}
+                        </div>
+                        {% if block.value.job_title or block.value.department %}
+                            <div class="block-field settings-field">
+                                {% if block.value.job_title %}<strong>Job Title:</strong> {{ block.value.job_title }}<br>{% endif %}
+                                {% if block.value.department %}<strong>Department:</strong> {{ block.value.department }}{% endif %}
+                            </div>
+                        {% endif %}
+                        <div class="block-field settings-field">
+                            <strong>Email (Required):</strong> {{ block.value.email }}
+                        </div>
+                        <div class="block-field settings-field">
+                            <strong>Available:</strong> {{ block.value.available|yesno:"Yes,No" }}
+                        </div>
+                        <div class="block-field settings-field">
+                            <strong>Display Contact:</strong> {{ block.value.display_contact|yesno:"Yes,No" }}
+                        </div>
+                        <div class="block-field settings-field">
+                            <strong>Theme:</strong> {{ block.value.theme }}
+                        </div>
+                        <div class="block-field settings-field">
+                            <strong>Font Size:</strong> {{ block.value.font_size }}
+                        </div>
+
+                    {% elif block.block_type == 'employee' %}
+                        <h2>Employee Block</h2>
+                        <p><em>Tests: get_form_layout() override, extending parent layout</em></p>
+                        {% if block.value.photo %}
+                            <div class="block-field">
+                                <strong>Photo:</strong>
+                                {% image block.value.photo width-200 %}
+                            </div>
+                        {% endif %}
+                        <div class="block-field">
+                            <strong>Name:</strong> {{ block.value.first_name }} {{ block.value.surname }}
+                        </div>
+                        <div class="block-field">
+                            <strong>Role:</strong> {{ block.value.role }}
+                        </div>
+                        <div class="block-field">
+                            <strong>Biography:</strong>
+                            {{ block.value.biography|richtext }}
+                        </div>
+                        {% if block.value.start_date or block.value.employee_id %}
+                            <div class="block-field">
+                                {% if block.value.start_date %}<strong>Start Date:</strong> {{ block.value.start_date }}<br>{% endif %}
+                                {% if block.value.employee_id %}<strong>Employee ID:</strong> {{ block.value.employee_id }}{% endif %}
+                            </div>
+                        {% endif %}
+                        <div class="block-field settings-field">
+                            <strong>Active Status:</strong> {{ block.value.active_status|yesno:"Active,Inactive" }}
+                        </div>
+                        <div class="block-field settings-field">
+                            <strong>Email (Required):</strong> {{ block.value.email }}
+                        </div>
+                        <div class="block-field settings-field">
+                            <strong>Theme:</strong> {{ block.value.theme }} | <strong>Font:</strong> {{ block.value.font_size }}
+                        </div>
+
+                    {% elif block.block_type == 'article' %}
+                        <h2>Article Block</h2>
+                        <p><em>Tests: Custom form_template, nested StructBlock with its own form_template</em></p>
+                        <div class="block-field">
+                            <strong>Headline:</strong>
+                            <h3 style="margin: 0;">{{ block.value.headline }}</h3>
+                            {% if block.value.subheading %}<p style="color: #666;">{{ block.value.subheading }}</p>{% endif %}
+                        </div>
+                        {% if block.value.author %}
+                            <div class="block-field">
+                                <strong>Author:</strong> {{ block.value.author }}
+                            </div>
+                        {% endif %}
+                        <div class="block-field" style="border-left-color: #28a745;">
+                            <strong>Article Content:</strong>
+                            <p><strong>Title:</strong> {{ block.value.content.title }}</p>
+                            {% if block.value.content.intro %}<p><em>{{ block.value.content.intro }}</em></p>{% endif %}
+                            {% if block.value.content.image %}
+                                <img src="{{ block.value.content.image.file.url }}" alt="{{ block.value.content.image.title }}" style="max-width: 100%;">
+                                {% if block.value.content.image_caption %}<p><small>{{ block.value.content.image_caption }}</small></p>{% endif %}
+                            {% endif %}
+                            {{ block.value.content.body|richtext }}
+                            <p><small>Alignment: {{ block.value.content.alignment }}</small></p>
+                        </div>
+                        {% if block.value.publish_date %}
+                            <div class="block-field">
+                                <strong>Publish Date:</strong> {{ block.value.publish_date }}
+                            </div>
+                        {% endif %}
+                        <div class="block-field settings-field">
+                            <strong>Featured:</strong> {{ block.value.featured|yesno:"Yes,No" }} |
+                            <strong>Category:</strong> {{ block.value.category|default:"None" }} |
+                            <strong>Theme:</strong> {{ block.value.theme }} |
+                            <strong>Font:</strong> {{ block.value.font_size }}
+                        </div>
+
+                    {% elif block.block_type == 'testimonial' %}
+                        <h2>Testimonial Block</h2>
+                        <p><em>Tests: Complex nested groups, attrs, both ImageBlock and ImageChooserBlock</em></p>
+                        <div class="block-field">
+                            <strong>Quote:</strong>
+                            <blockquote style="font-style: italic; margin: 1rem 0;">{{ block.value.quote }}</blockquote>
+                        </div>
+                        <div class="block-field">
+                            <strong>Author:</strong>
+                            {% if block.value.author_photo %}
+                                {% image block.value.author_photo width-100 %}
+                            {% endif %}
+                            <p>{{ block.value.author_name }}{% if block.value.author_title %}, {{ block.value.author_title }}{% endif %}</p>
+                        </div>
+                        {% if block.value.company %}
+                            <div class="block-field">
+                                <strong>Company:</strong> {{ block.value.company }}
+                                {% if block.value.company_logo %}
+                                    <br><img src="{{ block.value.company_logo.file.url }}" alt="{{ block.value.company_logo.title }}" style="max-width: 150px;">
+                                {% endif %}
+                            </div>
+                        {% endif %}
+                        <div class="block-field settings-field">
+                            {% if block.value.rating %}
+                                <strong>Rating:</strong> {{ block.value.rating }}
+                                ({{ block.value.show_rating|yesno:"Shown,Hidden" }})
+                            {% endif %}
+                        </div>
+                        <div class="block-field settings-field">
+                            <strong>Layout:</strong> {{ block.value.layout_style }} |
+                            <strong>Theme:</strong> {{ block.value.theme }} |
+                            <strong>Font:</strong> {{ block.value.font_size }}
+                        </div>
+                    {% endif %}
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p>No test blocks added yet. Add some blocks in the Wagtail admin to test the form_layout feature.</p>
+    {% endif %}
+</div>
+{% endblock content %}

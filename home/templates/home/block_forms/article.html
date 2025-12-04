@@ -1,0 +1,41 @@
+{% load wagtailadmin_tags %}
+
+<div class="{{ classname }}" data-article-block style="border: 3px dashed #0066cc; padding: 1rem; background: #2378c2ff;">
+    <div style="background: #0066cc; color: white; padding: 0.5rem 1rem; margin: -1rem -1rem 1rem -1rem; font-weight: bold; font-size: 0.9rem;">
+        📝 CUSTOM FORM TEMPLATE: ArticleBlock (settings rendered AFTER children)
+    </div>
+
+    {% if help_text %}
+        <span>
+            <div class="help">
+                {% icon name="help" classname="default" %}
+                {{ help_text }}
+            </div>
+        </span>
+    {% endif %}
+
+    {% for child in children.values %}
+        <div class="w-field" data-field data-contentpath="{{ child.block.name }}">
+            {% if child.block.label %}
+                <label class="w-field__label" {% if child.id_for_label %}for="{{ child.id_for_label }}"{% endif %}>{{ child.block.label }}{% if child.block.required %}<span class="w-required-mark">*</span>{% endif %}</label>
+            {% endif %}
+            {{ child.render_form }}
+        </div>
+    {% endfor %}
+
+    <div style="border-top: 2px solid #0066cc; margin-top: 1.5rem; padding-top: 1rem;">
+        <div style="color: white; font-weight: bold; margin-bottom: 0.5rem; font-size: 0.85rem;">
+            ⚙️ Settings (Rendered Below Children - Custom Order)
+        </div>
+        <div data-block-settings>
+            {% for child in settings.values %}
+                <div class="w-field" data-field data-contentpath="{{ child.block.name }}">
+                    {% if child.block.label %}
+                        <label class="w-field__label" {% if child.id_for_label %}for="{{ child.id_for_label }}"{% endif %}>{{ child.block.label }}{% if child.block.required %}<span class="w-required-mark">*</span>{% endif %}</label>
+                    {% endif %}
+                    {{ child.render_form }}
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>

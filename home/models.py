@@ -190,6 +190,8 @@ class ArticleContentBlock(blocks.StructBlock):
     title = blocks.CharBlock()
     intro = blocks.TextBlock(required=False, help_text="Brief introduction")
     body = blocks.RichTextBlock()
+    # Make sure having a `content` block doesn't cause any ID conflicts
+    content = blocks.RichTextBlock()
     image = ImageChooserBlock(required=False)
     image_caption = blocks.CharBlock(required=False)
 
@@ -212,6 +214,7 @@ class ArticleContentBlock(blocks.StructBlock):
                 "intro",
                 "image",
                 "body",
+                "content",
             ],
             settings=[
                 "image_caption",
@@ -287,6 +290,12 @@ class ArticleBlock(blocks.StructBlock):
         )
 
 
+class TestimonialDetailsBlock(blocks.StructBlock):
+    # Make sure having a `content` block doesn't cause any ID conflicts
+    content = blocks.RichTextBlock()
+    static = blocks.StaticBlock()
+
+
 class TestimonialBlock(blocks.StructBlock):
     """Block demonstrating attrs and various nested configurations"""
 
@@ -296,6 +305,7 @@ class TestimonialBlock(blocks.StructBlock):
     author_photo = ImageBlock(required=False)
     company = blocks.CharBlock(required=False)
     company_logo = ImageChooserBlock(required=False)
+    details = TestimonialDetailsBlock()
 
     rating = blocks.ChoiceBlock(
         choices=[
@@ -374,6 +384,7 @@ class TestimonialBlock(blocks.StructBlock):
                     icon="site",
                     classname="collapsed",
                 ),
+                "details",
             ],
             settings=[
                 BlockGroup(

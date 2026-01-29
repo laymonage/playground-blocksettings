@@ -1,15 +1,3 @@
-from django.db import models
-from copy import deepcopy
-
-from wagtail import blocks
-from wagtail.blocks import BlockGroup
-from wagtail.fields import StreamField
-from wagtail.images.blocks import ImageChooserBlock, ImageBlock
-from wagtail.models import Page
-from wagtail.admin.panels import FieldPanel
-
-
-from django.db import models
 from copy import deepcopy
 
 from wagtail import blocks
